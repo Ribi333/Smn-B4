@@ -21,12 +21,12 @@ public class MoreKB extends IMoreKB {
         super("MoreKB", category.combat);
         this.registerSetting(mode = new ModeValue("Mode", this)
                 .add(new SimpleSprintReset("Legit", this))
-                .add(new SimpleSprintReset("LegitSneak", this))
+                .add(new SimpleSprintReset("SneakTap", this))
                 .add(new SimpleSprintReset("LegitFast", this))
                 .add(new SimpleSprintReset("Fast", this))
                 .add(new SimpleSprintReset("Packet", this))
-                .add(new SimpleSprintReset("LegitBlock", this))
-                .add(new SimpleSprintReset("LegitInv", this))
+                .add(new SimpleSprintReset("BlockHitTap", this))
+                .add(new SimpleSprintReset("InvTap", this))
                 .setDefaultValue("LegitFast")
         );
     }
