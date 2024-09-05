@@ -130,7 +130,7 @@ public class HUD extends Module {
             }
         }
         catch (Exception exception) {
-            Utils.sendMessage("&cAn error occurred rendering HUD. check your logs");
+            Utils.sendMessage("&cAn error occurred rendering HUD. Please check your logs");
             Utils.sendDebugMessage(Arrays.toString(exception.getStackTrace()));
             Utils.log.error(exception);
         }
