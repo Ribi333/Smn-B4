@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Watermark extends Module {
-    public static final String VERSION = "2.3.0";
+    public static final String VERSION = "B4";
     public static final HashMap<String, ResourceLocation> WATERMARK = new HashMap<>();
 
     public static String customName = "CustomClient";
@@ -82,13 +82,13 @@ public class Watermark extends Module {
                 String text = "";
                 switch ((int) watermarkText.getInput()) {
                     case 0:
-                        text = "§r§f§lRaven §bX§9D §7";
+                        text = "§r§c§lSmn §b&lB4 §r";
                         break;
                     case 1:
                         text = customName;
                         break;
                     case 2:
-                        text = "§r§f§lRaven§9Sense §rFPS:" + Minecraft.getDebugFPS() + " §r";
+                        text = "§r§c§lSemen&b&lSense §rFPS:" + Minecraft.getDebugFPS() + " §r";
                         break;
                 }
 
