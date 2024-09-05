@@ -111,6 +111,9 @@ processResources {
 }
 
 jar {
+    archiveBaseName = "Smn"
+    archiveVersion = project.version
+    archiveClassifier = ""
     from(configurations.embed.collect {
         it.isDirectory() ? it : zipTree(it)
     }) {
