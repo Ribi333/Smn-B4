@@ -29,3 +29,4 @@ jobs:
         with:
           name: SmnB4
           path: build/libs/*.jar
+
