@@ -23,7 +23,7 @@ apply plugin: 'java'
 
 group = "keystrokesmod"
 archivesBaseName = "Smn"
-//version = "B4"
+version = "B4"
 
 compileJava {
     sourceCompatibility = '1.8'
