@@ -31,8 +31,8 @@ public class SimpleSprintReset extends SubMode<IMoreKB> {
         this.registerSetting(minDelayBetween = new SliderSetting("Min delay between", 10, 0, 13, 1, "ticks"));
         this.registerSetting(maxDelayBetween = new SliderSetting("Max delay between", 10, 0, 13, 1, "ticks"));
         this.registerSetting(chance = new SliderSetting("Chance", 100, 0, 100, 1, "%"));
-        this.registerSetting(playersOnly = new ButtonSetting("Players only", true));
-        this.registerSetting(notWhileRunner = new ButtonSetting("Not while runner", false));
+        this.registerSetting(playersOnly = new ButtonSetting("Players Only", true));
+        this.registerSetting(notWhileRunner = new ButtonSetting("Not while running", false));
     }
 
     @Override
