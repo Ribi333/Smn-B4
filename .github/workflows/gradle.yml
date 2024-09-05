@@ -13,10 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up JDK 17
+    - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '8'
         distribution: 'temurin'
 
     - name: Validate Gradle wrapper
@@ -31,8 +31,20 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+    - name: List contents of build directory
+      run: ls -R build/libs
+
     - name: Upload JAR file as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: SmnB4
-        path: build/libs/*.jar
+        name: Smn
+        path: build/libs/Smn-*.jar
+
+    - name: Check for uploaded artifacts
+      run: |
+        if [ -z "$(find build/libs -name 'Smn-*.jar' -print -quit)" ]; then
+          echo "No Smn-*.jar files found in build/libs directory"
+          exit 1
+        else
+          echo "Smn-*.jar files found and should be uploaded as artifacts"
+        fi
