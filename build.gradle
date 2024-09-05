@@ -22,8 +22,8 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 
 group = "keystrokesmod"
-archivesBaseName = "raven-XD"
-//version = "2.3-Dev"
+archivesBaseName = "Smn"
+//version = "B4"
 
 compileJava {
     sourceCompatibility = '1.8'
