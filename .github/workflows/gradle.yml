@@ -37,7 +37,7 @@ jobs:
     - name: Upload JAR file as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: Smn
+        name: SmnB4-JAR
         path: build/libs/Smn-B4.jar
 
     - name: Check for uploaded artifacts
