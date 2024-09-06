@@ -24,4 +24,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: SmnB4-JAR
-        path: build/libs/*.jar
+        path: build/libs/Smn-B4.jar
