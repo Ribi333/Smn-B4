@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: SmnB4-JAR
-        path: build/libs/Smn-*.jar
+        path: build/libs/Smn-B4.jar
 
     - name: Check for uploaded artifacts
       run: |
