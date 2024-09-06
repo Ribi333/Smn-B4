@@ -20,7 +20,7 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew clean shadowJar
-    - name: Upload JAR
+    - name: Upload JAR file as artifact
       uses: actions/upload-artifact@v3
       with:
         name: SmnB4-JAR
