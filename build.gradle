@@ -21,9 +21,10 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 
-group = "keystrokesmod"
-baseName = "Smn"
-version = "B4"
+jar {
+    group = "keystrokesmod"
+    baseName = "Smn-B4"
+}
 
 compileJava {
     sourceCompatibility = '1.8'
