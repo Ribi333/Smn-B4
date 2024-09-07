@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Set a maximum job runtime
     
     steps:
     - uses: actions/checkout@v3
@@ -33,13 +34,14 @@ jobs:
     - name: Clean Gradle cache
       run: ./gradlew clean --info
 
-    - name: Build with Gradle (verbose)
-      run: ./gradlew build --info --stacktrace -Dorg.gradle.debug=true -Dorg.gradle.daemon=false
+    - name: Build with Gradle (optimized)
+      run: |
+        ./gradlew build --info --stacktrace \
+        -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
+        -Dorg.gradle.parallel=true \
+        -Dorg.gradle.configureondemand=true
+      timeout-minutes: 10  # Set a timeout for this specific step
       
-    - name: Run compilations with unchecked operations details
-      if: failure()
-      run: ./gradlew compileJava -Xlint:unchecked --info --stacktrace
-    
     - name: List files in build directory
       run: ls -R build
       
