@@ -23,7 +23,8 @@ apply plugin: 'java'
 
 jar {
     group = "keystrokesmod"
-    baseName = "Smn-B4"
+    baseName = "Smn"
+    version = "B4"
 }
 
 compileJava {
