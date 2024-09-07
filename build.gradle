@@ -22,7 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 
 group = "keystrokesmod"
-archivesFileName = "Smn"
+archiveFileName = "Smn"
 version = "B4"
 
 compileJava {
