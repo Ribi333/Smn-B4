@@ -36,3 +36,10 @@ jobs:
     # Run Gradle build
     - name: Build with Gradle
       run: ./gradlew build --stacktrace
+
+    # Upload the built .jar file as an artifact
+    - name: Upload .jar artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Smn-B4-jar
+        path: build/libs/*.jar
