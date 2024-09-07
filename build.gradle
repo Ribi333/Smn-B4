@@ -111,9 +111,9 @@ processResources {
 }
 
 jar {
-    archiveBaseName = "Smn"
-    archiveVersion = project.version
-    archiveClassifier = ""
+    baseName = "Smn"  // Set base name instead of archiveBaseName
+    version = project.version
+    classifier = ""  // Empty classifier
     from(configurations.embed.collect {
         it.isDirectory() ? it : zipTree(it)
     }) {
