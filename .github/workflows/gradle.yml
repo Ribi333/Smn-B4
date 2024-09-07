@@ -23,7 +23,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 4.7
+        gradle-version: 4.4.1
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -39,8 +39,7 @@ jobs:
         ./gradlew build --debug --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true \
-        -PcompileJava.options.compilerArgs="['-Xlint:unchecked', '-Xlint:deprecation']"
+        -Dorg.gradle.configureondemand=true
       
     - name: List files in build directory
       run: ls -R build
