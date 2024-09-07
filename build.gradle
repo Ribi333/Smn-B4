@@ -136,6 +136,26 @@ jar {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = 'your.group.id'
+            artifactId = 'Smn'
+            version = 'B4'
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/your-username/your-repo")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+}
+
 reobf {
     jar {
         mappingType = "SEARGE"
