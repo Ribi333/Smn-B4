@@ -27,12 +27,32 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+    - name: Display Gradle version
+      run: ./gradlew --version
     
-    - name: Upload artifact
+    - name: Clean Gradle cache
+      run: ./gradlew clean --info
+
+    - name: Build with Gradle (verbose)
+      run: ./gradlew build --info --stacktrace -Dorg.gradle.debug=true -Dorg.gradle.daemon=false
+
+    - name: Run compilations with unchecked operations details
+      if: failure()
+      run: ./gradlew compileJava -Xlint:unchecked --info --stacktrace
+    
+    - name: Upload build logs
+      if: always()
       uses: actions/upload-artifact@v3
+      with:
+        name: gradle-logs
+        path: |
+          .gradle/daemon
+          build/reports
+          *.log
+    
+    - name: Upload compiled JAR
       if: success()
+      uses: actions/upload-artifact@v3
       with:
         name: Smn-B4
         path: build/libs/Smn-B4.jar
