@@ -1,8 +1,10 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        mavenCentral()
+        maven { url = 'https://plugins.gradle.org/m2/' }
+        jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -36,11 +38,16 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = 'https://repo.spongepowered.org/maven' }
+    maven { url = 'https://jitpack.io' }
 }
 
 configurations {
     embed
     compile.extendsFrom(embed)
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
