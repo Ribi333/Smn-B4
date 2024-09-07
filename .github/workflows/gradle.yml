@@ -36,7 +36,6 @@ jobs:
     - name: List build directory contents
       run: ls -R build/libs
 
-# skibidi sigma
     - name: Upload JAR file as artifact
       uses: actions/upload-artifact@v3
       with:
