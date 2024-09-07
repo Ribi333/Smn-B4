@@ -35,19 +35,22 @@ jobs:
 
     - name: Build with Gradle (verbose)
       run: ./gradlew build --info --stacktrace -Dorg.gradle.debug=true -Dorg.gradle.daemon=false
-
+      
     - name: Run compilations with unchecked operations details
       if: failure()
       run: ./gradlew compileJava -Xlint:unchecked --info --stacktrace
     
+    - name: List files in build directory
+      run: ls -R build
+      
     - name: Upload build logs
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: gradle-logs
         path: |
-          .gradle/daemon
-          build/reports
+          build/reports/**/*
+          build/test-results/**/*
           *.log
     
     - name: Upload compiled JAR
@@ -55,4 +58,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Smn-B4
-        path: build/libs/Smn-B4.jar
+        path: build/libs/*.jar
