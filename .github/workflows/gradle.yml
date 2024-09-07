@@ -34,13 +34,23 @@ jobs:
     - name: Clean Gradle cache
       run: ./gradlew clean --info
 
-    - name: Build with Gradle (with detailed error reporting)
+    - name: Compile Java (with detailed error reporting)
       run: |
-        ./gradlew build --info --stacktrace \
+        ./gradlew compileJava --info --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
         -Dorg.gradle.configureondemand=true \
-        -PcompileJava.options.compilerArgs=["-Xlint:unchecked","-Xlint:deprecation"]
+        -PcompileJava.options.compilerArgs=["-Xlint:unchecked","-Xlint:deprecation"] \
+        > compilation_output.log 2>&1
+      continue-on-error: true
+
+    - name: Display compilation errors
+      run: cat compilation_output.log
+      if: failure()
+
+    - name: Build with Gradle
+      run: ./gradlew build --info --stacktrace
+      if: success()
       
     - name: List files in build directory
       run: ls -R build
@@ -51,6 +61,7 @@ jobs:
       with:
         name: gradle-logs
         path: |
+          compilation_output.log
           build/reports/**/*
           build/test-results/**/*
           *.log
