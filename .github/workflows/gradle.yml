@@ -43,23 +43,29 @@ jobs:
         ./gradlew build --debug --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true \
-        > build_output.log 2>&1
-      
-    - name: Display full build output
+        -Dorg.gradle.configureondemand=true
+      continue-on-error: true
+    
+    - name: Display Gradle build output
       if: always()
-      run: cat build_output.log
-      
+      run: |
+        if [ -f build_output.log ]; then
+          cat build_output.log
+        else
+          echo "build_output.log not found. Displaying gradle.log:"
+          cat $HOME/.gradle/daemon/4.7/daemon-*.out.log
+        fi
+    
     - name: Display compilation errors
       if: failure()
       run: |
         echo "Compilation Errors:"
-        cat build_output.log | grep -A 10 "\[ERROR\]"
-        
-    - name: List files in build directory
+        grep -A 10 "\[ERROR\]" $HOME/.gradle/daemon/4.7/daemon-*.out.log || echo "No [ERROR] found in Gradle logs"
+    
+    - name: List files in project directory
       if: always()
       run: ls -R
-      
+    
     - name: Upload build logs
       if: always()
       uses: actions/upload-artifact@v3
@@ -67,7 +73,7 @@ jobs:
         name: gradle-logs
         path: |
           build_output.log
-          .gradle/gradle.log
+          $HOME/.gradle/daemon/4.7/daemon-*.out.log
           build/reports/**/*
           build/test-results/**/*
           *.log
