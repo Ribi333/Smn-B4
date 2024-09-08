@@ -39,8 +39,15 @@ jobs:
         ./gradlew build --debug --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true
+        -Dorg.gradle.configureondemand=true \
+        > build_output.log 2>&1
       
+    - name: Display compilation errors
+      if: failure()
+      run: |
+        echo "Compilation Errors:"
+        cat build_output.log | grep -A 10 "\[ERROR\]"
+        
     - name: List files in build directory
       run: ls -R build
       
@@ -50,6 +57,7 @@ jobs:
       with:
         name: gradle-logs
         path: |
+          build_output.log
           build/reports/**/*
           build/test-results/**/*
           *.log
