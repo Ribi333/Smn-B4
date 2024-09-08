@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     
     steps:
     - uses: actions/checkout@v3
@@ -23,24 +23,32 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 4.4.1
+        gradle-version: 4.7
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Display Gradle version
-      run: ./gradlew --version
+    - name: Display Gradle version and system info
+      run: |
+        ./gradlew --version
+        java -version
+        echo "JAVA_HOME: $JAVA_HOME"
+        echo "PATH: $PATH"
     
     - name: Clean Gradle cache
       run: ./gradlew clean --info
-
+    
     - name: Build with Gradle (verbose)
       run: |
         ./gradlew build --debug --stacktrace \
-        -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
+        -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
         -Dorg.gradle.configureondemand=true \
         > build_output.log 2>&1
+      
+    - name: Display full build output
+      if: always()
+      run: cat build_output.log
       
     - name: Display compilation errors
       if: failure()
@@ -49,7 +57,8 @@ jobs:
         cat build_output.log | grep -A 10 "\[ERROR\]"
         
     - name: List files in build directory
-      run: ls -R build
+      if: always()
+      run: ls -R
       
     - name: Upload build logs
       if: always()
@@ -58,6 +67,7 @@ jobs:
         name: gradle-logs
         path: |
           build_output.log
+          .gradle/gradle.log
           build/reports/**/*
           build/test-results/**/*
           *.log
