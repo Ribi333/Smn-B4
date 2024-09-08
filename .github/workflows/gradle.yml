@@ -1,5 +1,3 @@
-name: Java CI with Gradle
-
 on:
   push:
     branches: [ "master" ]
@@ -40,27 +38,26 @@ jobs:
     
     - name: Build with Gradle (verbose)
       run: |
-        ./gradlew build --debug --stacktrace \
+        ./gradlew build --info --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true
+        -Dorg.gradle.configureondemand=true \
+        > build_output.log 2>&1
       continue-on-error: true
     
     - name: Display Gradle build output
       if: always()
       run: |
-        if [ -f build/build_output.log ]; then
-          cat build/build_output.log
-        else
-          echo "build_output.log not found. Displaying gradle.log:"
-          cat $HOME/.gradle/daemon/4.4.1/daemon-*.out.log
-        fi
+        echo "Full Gradle Build Output:"
+        cat build_output.log
     
     - name: Display compilation errors
-      if: failure()
+      if: always()
       run: |
         echo "Compilation Errors:"
-        grep -A 10 "\[ERROR\]" $HOME/.gradle/daemon/4.4.1/daemon-*.out.log || echo "No [ERROR] found in Gradle logs"
+        grep -i "error:" build_output.log || echo "No compilation errors found"
+        echo "Build Failures:"
+        grep -i "build failed" build_output.log || echo "No build failure message found"
     
     - name: List files in project directory
       if: always()
@@ -72,8 +69,7 @@ jobs:
       with:
         name: gradle-logs
         path: |
-          build/build_output.log
-          $HOME/.gradle/daemon/4.4.1/daemon-*.out.log
+          build_output.log
           build/reports/**/*
           build/test-results/**/*
           *.log
