@@ -1,3 +1,5 @@
+name: Java CI with Gradle
+
 on:
   push:
     branches: [ "master" ]
@@ -41,8 +43,7 @@ jobs:
         ./gradlew build --info --stacktrace \
         -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
         -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true \
-        > build_output.log 2>&1
+        -Dorg.gradle.configureondemand=true 2>&1 | tee build_output.log
       continue-on-error: true
     
     - name: Display Gradle build output
@@ -58,6 +59,8 @@ jobs:
         grep -i "error:" build_output.log || echo "No compilation errors found"
         echo "Build Failures:"
         grep -i "build failed" build_output.log || echo "No build failure message found"
+        echo "Exception Stack Traces:"
+        sed -n '/Exception/,/at /p' build_output.log || echo "No exception stack traces found"
     
     - name: List files in project directory
       if: always()
