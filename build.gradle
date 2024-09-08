@@ -15,6 +15,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
+println "Project name: ${project.name}"
+println "Project directory: ${project.projectDir}"
+
 version = "B4"
 group = "keystrokesmod"
 archivesBaseName = "Smn"
@@ -62,6 +65,13 @@ dependencies {
     // compile files('libraries/ViaLoader-3.0.3-SNAPSHOT.jar')
     // compile files('libraries/ViaRewind-4.0.3-SNAPSHOT.jar')
     // compile files('libraries/ViaVersion-5.0.4-SNAPSHOT.jar')
+}
+
+task createDirs {
+    doLast {
+        mkdir "${buildDir}/libs"
+        println "Created directory: ${buildDir}/libs"
+    }
 }
 
 processResources {
@@ -118,14 +128,22 @@ task renameShadowJar(type: Copy) {
     }
 }
 
-tasks.reobfShadowJar.finalizedBy renameShadowJar
-tasks.build.dependsOn reobfShadowJar
-
 compileJava {
+    dependsOn createDirs
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+tasks.reobfShadowJar.finalizedBy renameShadowJar
+tasks.build.dependsOn reobfShadowJar
+
+gradle.buildFinished { result ->
+    println "Build finished. Build directory contents:"
+    project.buildDir.eachFileRecurse { file ->
+        println file
+    }
 }
