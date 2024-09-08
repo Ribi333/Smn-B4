@@ -2,8 +2,8 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = 'https://plugins.gradle.org/m2/' }
+        maven { url = "https://repo.spongepowered.org/maven" }
+        maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
@@ -21,10 +21,6 @@ group = "keystrokesmod"
 archivesBaseName = "Smn"
 
 sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-    options.encoding = 'UTF-8'
-}
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
@@ -59,6 +55,14 @@ dependencies {
     compile 'cn.hutool:hutool-all:5.8.26'
     compile files('libraries/json-20220924.jar')
     compile files('libraries/discord-rpc.jar')
+
+    // Uncomment these if needed
+    // compile files('libraries/ViaAprilFools-3.0.2-SNAPSHOT.jar')
+    // compile files('libraries/ViaBackwards-5.0.4-SNAPSHOT.jar')
+    // compile files('libraries/ViaLegacy-3.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaLoader-3.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaRewind-4.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaVersion-5.0.4-SNAPSHOT.jar')
 }
 
 processResources {
@@ -74,12 +78,16 @@ processResources {
     }
 }
 
+mixin {
+    add sourceSets.main, "mixins.raven.refmap.json"
+}
+
 shadowJar {
     configurations = [project.configurations.embed]
     classifier = ''
     baseName = project.archivesBaseName + '-' + project.version
     destinationDir = file("$buildDir/libs")
-    
+
     exclude 'dummyThing'
     exclude 'LICENSE.txt'
     exclude 'META-INF/MUMFREY.RSA'
@@ -104,3 +112,41 @@ reobf {
 }
 
 tasks.build.dependsOn shadowJar
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-verbose"
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+    options.forkOptions.jvmArgs << '-Xmx2G'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-verbose"
+}
+
+task printCompileClasspath {
+    doLast {
+        println "Compile classpath:"
+        configurations.compileClasspath.each { println it }
+    }
+}
+
+task printRuntimeClasspath {
+    doLast {
+        println "Runtime classpath:"
+        configurations.runtimeClasspath.each { println it }
+    }
+}
+
+compileJava.doFirst {
+    println "Source sets:"
+    sourceSets.main.java.srcDirs.each { println it }
+}
+
+gradle.taskGraph.beforeTask { Task task ->
+    if (task instanceof JavaCompile) {
+        println "Compiling with args: ${task.options.compilerArgs}"
+    }
+}
