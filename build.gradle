@@ -24,6 +24,10 @@ sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
     options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+    options.forkOptions.jvmArgs << '-Xmx2G'
 }
 
 minecraft {
@@ -109,3 +113,9 @@ reobf {
 }
 
 tasks.build.dependsOn shadowJar
+
+// Add this at the end of your build.gradle file
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
