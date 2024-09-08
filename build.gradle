@@ -2,11 +2,11 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = 'https://plugins.gradle.org/m2/' }
+        maven { url = "https://repo.spongepowered.org/maven" }
+        maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
@@ -21,14 +21,6 @@ group = "keystrokesmod"
 archivesBaseName = "Smn"
 
 sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    options.fork = true
-    options.forkOptions.executable = 'javac'
-    options.forkOptions.jvmArgs << '-Xmx2G'
-}
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
@@ -63,7 +55,6 @@ dependencies {
     compile 'cn.hutool:hutool-all:5.8.26'
     compile files('libraries/json-20220924.jar')
     compile files('libraries/discord-rpc.jar')
-
     // Uncomment these if needed
     // compile files('libraries/ViaAprilFools-3.0.2-SNAPSHOT.jar')
     // compile files('libraries/ViaBackwards-5.0.4-SNAPSHOT.jar')
@@ -76,7 +67,6 @@ dependencies {
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
@@ -114,7 +104,6 @@ reobf {
 
 tasks.build.dependsOn shadowJar
 
-// Add this at the end of your build.gradle file
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
@@ -125,4 +114,5 @@ task printJavaVersion {
         println "Java version: ${System.getProperty('java.version')}"
     }
 }
+
 build.dependsOn printJavaVersion
