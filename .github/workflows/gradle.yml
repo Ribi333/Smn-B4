@@ -28,12 +28,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Print diagnostic information
-      run: |
-        ./gradlew printCompileClasspath --info
-        ./gradlew printRuntimeClasspath --info
-      continue-on-error: true
-
     - name: Build with Gradle and capture output
       run: ./gradlew build --info --stacktrace > build_output.log 2>&1
       continue-on-error: true
@@ -46,14 +40,14 @@ jobs:
         echo "Full error output:"
         cat build_output.log
 
-    - name: List entire build directory
-      run: find build -type f
+    - name: List build directory contents
+      run: ls -R build/libs
       
     - name: Upload compiled JAR
       uses: actions/upload-artifact@v3
       with:
         name: Smn-B4
-        path: build/**/*.jar
+        path: build/libs/Smn-B4.jar
         if-no-files-found: warn
 
     - name: Upload build logs
