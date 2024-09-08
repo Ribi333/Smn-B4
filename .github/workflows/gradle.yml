@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     
     steps:
     - uses: actions/checkout@v3
@@ -23,63 +23,30 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 4.4.1
+        gradle-version: 4.7
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Display Gradle version and system info
-      run: |
-        ./gradlew --version
-        java -version
-        echo "JAVA_HOME: $JAVA_HOME"
-        echo "PATH: $PATH"
+    - name: Build with Gradle
+      run: ./gradlew build --info
     
-    - name: Clean Gradle cache
-      run: ./gradlew clean --info
-    
-    - name: Build with Gradle (verbose)
-      run: |
-        ./gradlew build --info --stacktrace \
-        -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
-        -Dorg.gradle.parallel=true \
-        -Dorg.gradle.configureondemand=true 2>&1 | tee build_output.log
-      continue-on-error: true
-    
-    - name: Display Gradle build output
-      if: always()
-      run: |
-        echo "Full Gradle Build Output:"
-        cat build_output.log
-    
-    - name: Display compilation errors
-      if: always()
-      run: |
-        echo "Compilation Errors:"
-        grep -i "error:" build_output.log || echo "No compilation errors found"
-        echo "Build Failures:"
-        grep -i "build failed" build_output.log || echo "No build failure message found"
-        echo "Exception Stack Traces:"
-        sed -n '/Exception/,/at /p' build_output.log || echo "No exception stack traces found"
-    
-    - name: List files in project directory
-      if: always()
-      run: ls -R
-    
+    - name: List entire build directory
+      run: find build -type f
+      
+    - name: Upload compiled JAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: Smn-B4
+        path: build/**/*.jar
+        if-no-files-found: warn
+
     - name: Upload build logs
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: gradle-logs
         path: |
-          build_output.log
           build/reports/**/*
           build/test-results/**/*
           *.log
-    
-    - name: Upload compiled JAR
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        name: Smn-B4
-        path: build/libs/*.jar
