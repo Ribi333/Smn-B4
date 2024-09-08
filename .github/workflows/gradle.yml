@@ -23,7 +23,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 4.7
+        gradle-version: 4.4.1
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -49,18 +49,18 @@ jobs:
     - name: Display Gradle build output
       if: always()
       run: |
-        if [ -f build_output.log ]; then
-          cat build_output.log
+        if [ -f build/build_output.log ]; then
+          cat build/build_output.log
         else
           echo "build_output.log not found. Displaying gradle.log:"
-          cat $HOME/.gradle/daemon/4.7/daemon-*.out.log
+          cat $HOME/.gradle/daemon/4.4.1/daemon-*.out.log
         fi
     
     - name: Display compilation errors
       if: failure()
       run: |
         echo "Compilation Errors:"
-        grep -A 10 "\[ERROR\]" $HOME/.gradle/daemon/4.7/daemon-*.out.log || echo "No [ERROR] found in Gradle logs"
+        grep -A 10 "\[ERROR\]" $HOME/.gradle/daemon/4.4.1/daemon-*.out.log || echo "No [ERROR] found in Gradle logs"
     
     - name: List files in project directory
       if: always()
@@ -72,8 +72,8 @@ jobs:
       with:
         name: gradle-logs
         path: |
-          build_output.log
-          $HOME/.gradle/daemon/4.7/daemon-*.out.log
+          build/build_output.log
+          $HOME/.gradle/daemon/4.4.1/daemon-*.out.log
           build/reports/**/*
           build/test-results/**/*
           *.log
