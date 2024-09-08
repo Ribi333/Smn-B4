@@ -28,26 +28,29 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
+    - name: Display Gradle version and project structure
+      run: |
+        ./gradlew --version
+        echo "Project structure:"
+        ls -R
+    
     - name: Build with Gradle and capture output
       run: ./gradlew build --info --stacktrace > build_output.log 2>&1
       continue-on-error: true
 
-    - name: Display compilation errors
-      if: failure()
-      run: |
-        echo "Compilation Errors:"
-        cat build_output.log | grep -A 10 "error:"
-        echo "Full error output:"
-        cat build_output.log
-
+    - name: Display build output
+      run: cat build_output.log
+    
     - name: List build directory contents
-      run: ls -R build/libs
+      run: |
+        echo "Build directory contents:"
+        ls -R build || echo "build directory does not exist"
       
     - name: Upload compiled JAR
       uses: actions/upload-artifact@v3
       with:
         name: Smn-B4
-        path: build/libs/Smn-B4.jar
+        path: build/libs/*.jar
         if-no-files-found: warn
 
     - name: Upload build logs
