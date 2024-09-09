@@ -29,7 +29,40 @@ minecraft {
     clientJvmArgs += '-Dfml.coreMods.load=keystrokesmod.mixins.MixinLoader'
 }
 
-// Keep your existing repositories and dependencies blocks
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/maven' }
+    maven { url = 'https://jitpack.io' }
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+dependencies {
+    embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'commons-codec'
+    }
+    
+    compile 'org.projectlombok:lombok:1.18.22'
+    compile 'org.jetbrains:annotations:24.1.0'
+    compile 'cn.hutool:hutool-all:5.8.26'
+    compile files('libraries/json-20220924.jar')
+    compile files('libraries/discord-rpc.jar')
+
+    // Uncomment these if needed
+    // compile files('libraries/ViaAprilFools-3.0.2-SNAPSHOT.jar')
+    // compile files('libraries/ViaBackwards-5.0.4-SNAPSHOT.jar')
+    // compile files('libraries/ViaLegacy-3.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaLoader-3.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaRewind-4.0.3-SNAPSHOT.jar')
+    // compile files('libraries/ViaVersion-5.0.4-SNAPSHOT.jar')
+}
 
 processResources {
     inputs.property "version", project.version
