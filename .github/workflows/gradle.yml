@@ -28,20 +28,24 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Display Gradle version and project structure
-      run: |
-        ./gradlew --version
-        echo "Project structure:"
-        ls -R
+    - name: Compile Java
+      run: ./gradlew compileJava --info > compile_output.log 2>&1
+      continue-on-error: true
     
-    - name: Build with Gradle
-      run: ./gradlew build --info --stacktrace --debug
-    
-    - name: List build directory contents
+    - name: Display compilation errors
       run: |
-        echo "Build directory contents:"
-        ls -R build || echo "build directory does not exist"
+        echo "Compilation Errors:"
+        grep -A 20 "Compilation failed;" compile_output.log || echo "No compilation errors found."
+    
+    - name: Full build attempt
+      run: ./gradlew build --info
       
+    - name: Upload compilation log
+      uses: actions/upload-artifact@v4
+      with:
+        name: compile-log
+        path: compile_output.log
+    
     - name: Upload final JAR
       uses: actions/upload-artifact@v4
       with:
