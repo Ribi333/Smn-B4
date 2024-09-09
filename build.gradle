@@ -31,7 +31,7 @@ minecraft {
 
 repositories {
     mavenCentral()
-    maven { url = 'https://repo.spongepowered.org/maven' }
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://jitpack.io' }
 }
 
@@ -54,20 +54,11 @@ dependencies {
     compile 'cn.hutool:hutool-all:5.8.26'
     compile files('libraries/json-20220924.jar')
     compile files('libraries/discord-rpc.jar')
-
-    // Uncomment these if needed
-    // compile files('libraries/ViaAprilFools-3.0.2-SNAPSHOT.jar')
-    // compile files('libraries/ViaBackwards-5.0.4-SNAPSHOT.jar')
-    // compile files('libraries/ViaLegacy-3.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaLoader-3.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaRewind-4.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaVersion-5.0.4-SNAPSHOT.jar')
 }
 
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
@@ -121,8 +112,3 @@ task copyJarToMods(type: Copy) {
 tasks.reobfShadowJar.finalizedBy renameShadowJar
 tasks.renameShadowJar.finalizedBy copyJarToMods
 tasks.build.dependsOn reobfShadowJar
-
-gradle.buildFinished { result ->
-    println "Build finished. Final JAR location:"
-    println "${buildDir}/final/Smn-B4-final.jar"
-}
