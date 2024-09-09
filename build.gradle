@@ -15,9 +15,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-println "Project name: ${project.name}"
-println "Project directory: ${project.projectDir}"
-
 version = "B4"
 group = "keystrokesmod"
 archivesBaseName = "Smn"
@@ -32,47 +29,7 @@ minecraft {
     clientJvmArgs += '-Dfml.coreMods.load=keystrokesmod.mixins.MixinLoader'
 }
 
-repositories {
-    mavenCentral()
-    maven { url = 'https://repo.spongepowered.org/maven' }
-    maven { url = 'https://jitpack.io' }
-}
-
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
-
-dependencies {
-    embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'commons-io'
-        exclude module: 'commons-codec'
-    }
-    
-    compile 'org.projectlombok:lombok:1.18.22'
-    compile 'org.jetbrains:annotations:24.1.0'
-    compile 'cn.hutool:hutool-all:5.8.26'
-    compile files('libraries/json-20220924.jar')
-    compile files('libraries/discord-rpc.jar')
-
-    // Uncomment these if needed
-    // compile files('libraries/ViaAprilFools-3.0.2-SNAPSHOT.jar')
-    // compile files('libraries/ViaBackwards-5.0.4-SNAPSHOT.jar')
-    // compile files('libraries/ViaLegacy-3.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaLoader-3.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaRewind-4.0.3-SNAPSHOT.jar')
-    // compile files('libraries/ViaVersion-5.0.4-SNAPSHOT.jar')
-}
-
-task createDirs {
-    doLast {
-        mkdir "${buildDir}/libs"
-        println "Created directory: ${buildDir}/libs"
-    }
-}
+// Keep your existing repositories and dependencies blocks
 
 processResources {
     inputs.property "version", project.version
@@ -95,12 +52,6 @@ shadowJar {
     configurations = [project.configurations.embed]
     classifier = 'all'
     
-    exclude 'dummyThing'
-    exclude 'LICENSE.txt'
-    exclude 'META-INF/MUMFREY.RSA'
-    exclude 'META-INF/maven/**'
-    exclude 'org/**/*.html'
-    
     manifest {
         attributes(
             'MixinConfigs': 'mixins.raven.json',
@@ -115,35 +66,30 @@ shadowJar {
 }
 
 reobf {
-    shadowJar {
-        mappingType = "SEARGE"
-    }
+    shadowJar { mappingType = "SEARGE" }
 }
 
 task renameShadowJar(type: Copy) {
-    from("${buildDir}/libs/${archivesBaseName}-${version}-all.jar")
-    into("${buildDir}/libs")
+    from "${buildDir}/libs/${archivesBaseName}-${version}-all-reobf.jar"
+    into "${buildDir}/libs"
     rename { String fileName ->
-        fileName.replace('-all.jar', '.jar')
+        fileName.replace("-all-reobf.jar", ".jar")
     }
 }
 
-compileJava {
-    dependsOn createDirs
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+task copyJarToMods(type: Copy) {
+    from "${buildDir}/libs/${archivesBaseName}-${version}.jar"
+    into "${buildDir}/final"
+    rename { String fileName ->
+        "Smn-B4-final.jar"
+    }
 }
 
 tasks.reobfShadowJar.finalizedBy renameShadowJar
+tasks.renameShadowJar.finalizedBy copyJarToMods
 tasks.build.dependsOn reobfShadowJar
 
 gradle.buildFinished { result ->
-    println "Build finished. Build directory contents:"
-    project.buildDir.eachFileRecurse { file ->
-        println file
-    }
+    println "Build finished. Final JAR location:"
+    println "${buildDir}/final/Smn-B4-final.jar"
 }
