@@ -28,14 +28,14 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Compile Java
-      run: ./gradlew compileJava --info > compile_output.log 2>&1
+    - name: Compile Java with warnings
+      run: ./gradlew compileJava -Xlint:deprecation -Xlint:unchecked --info --stacktrace > compile_output.log 2>&1
       continue-on-error: true
     
     - name: Display compilation errors
       run: |
-        echo "Compilation Errors:"
-        grep -A 20 "Compilation failed;" compile_output.log || echo "No compilation errors found."
+        echo "Compilation Errors and Warnings:"
+        cat compile_output.log | grep -E "error:|warning:" || echo "No compilation errors or warnings found."
     
     - name: Full build attempt
       run: ./gradlew build --info
