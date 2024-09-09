@@ -34,12 +34,8 @@ jobs:
         echo "Project structure:"
         ls -R
     
-    - name: Build with Gradle and capture output
-      run: ./gradlew build --info --stacktrace > build_output.log 2>&1
-      continue-on-error: true
-
-    - name: Display build output
-      run: cat build_output.log
+    - name: Build with Gradle
+      run: ./gradlew build --info --stacktrace
     
     - name: List build directory contents
       run: |
@@ -47,19 +43,18 @@ jobs:
         ls -R build || echo "build directory does not exist"
       
     - name: Upload final JAR
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Smn-B4-final
         path: build/final/Smn-B4-final.jar
         if-no-files-found: warn
-
+    
     - name: Upload build logs
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: gradle-logs
         path: |
-          build_output.log
           build/reports/**/*
           build/test-results/**/*
           *.log
