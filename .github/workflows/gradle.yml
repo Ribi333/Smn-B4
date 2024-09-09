@@ -35,7 +35,7 @@ jobs:
         ls -R
     
     - name: Build with Gradle
-      run: ./gradlew build --info --stacktrace
+      run: ./gradlew build --info --stacktrace --debug
     
     - name: List build directory contents
       run: |
