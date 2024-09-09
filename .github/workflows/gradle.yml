@@ -46,11 +46,11 @@ jobs:
         echo "Build directory contents:"
         ls -R build || echo "build directory does not exist"
       
-    - name: Upload compiled JAR
+    - name: Upload final JAR
       uses: actions/upload-artifact@v3
       with:
-        name: Smn-B4
-        path: build/libs/*.jar
+        name: Smn-B4-final
+        path: build/final/Smn-B4-final.jar
         if-no-files-found: warn
 
     - name: Upload build logs
